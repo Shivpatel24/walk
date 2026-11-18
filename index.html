@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+<title>Kriti, will you come for a walk with me?</title>
+<style>
+  :root{
+    --cream:#fff6ea;
+    --blush:#ffdce6;
+    --ink:#4a3b3a;
+    --yes-green:#3ba35c;
+    --yes-green-dark:#2c8047;
+    --no-red:#e0554f;
+    --no-red-dark:#c8433d;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    width:100%;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+    touch-action: manipulation;
+  }
+
+  body{
+    font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(160deg, #ffe3ec 0%, #fff3df 45%, #ffe9a8 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:100vh;
+    min-height:100dvh;
+    padding: calc(5vh + env(safe-area-inset-top, 0px)) max(16px, 5vw) calc(3vh + 16px + env(safe-area-inset-bottom, 0px));
+    color: var(--ink);
+    text-align:center;
+    position:relative;
+  }
+
+  /* Interactive flower field */
+  #bg{
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+    display:block;
+  }
+
+  h1{
+    font-size: clamp(1.4rem, 5.2vw, 2.4rem);
+    line-height:1.4;
+    max-width: 620px;
+    margin: 0 0 clamp(28px, 5vh, 46px);
+    font-weight:700;
+    color:#5a3a3f;
+    background: rgba(255,246,234,0.88);
+    padding: 16px 24px;
+    border-radius: 26px;
+    box-shadow: 0 10px 28px rgba(180,90,110,0.2);
+  }
+
+  .buttons{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: clamp(16px, 4vw, 32px);
+    flex-wrap: wrap;
+    position:relative;
+    min-height: 90px;
+  }
+
+  button{
+    border:none;
+    border-radius: 999px;
+    font-weight:700;
+    cursor:pointer;
+    color:#fff;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, font-size 0.25s ease, background 0.2s ease, left 0.35s ease, top 0.35s ease;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+
+  button:active{ transform: scale(0.96); }
+
+  #yesBtn{
+    background: linear-gradient(135deg, var(--yes-green), var(--yes-green-dark));
+    font-size: clamp(1.15rem, 4vw, 1.4rem);
+    padding: 0.7em 1.4em;
+  }
+  #yesBtn:hover{ box-shadow: 0 10px 22px rgba(59,163,92,0.45); }
+
+  #noBtn{
+    background: linear-gradient(135deg, var(--no-red), var(--no-red-dark));
+    font-size: clamp(0.85rem, 2.6vw, 1rem);
+    padding: 13px 22px;
+    max-width: 55vw;
+    white-space: normal;
+    line-height:1.3;
+  }
+  #noBtn:hover{ box-shadow: 0 10px 22px rgba(224,85,79,0.45); }
+
+  .reveal{
+    display:none;
+    margin-top: clamp(24px, 5vh, 40px);
+    font-size: clamp(1.3rem, 5vw, 1.9rem);
+    font-weight:700;
+    color:#2c8047;
+    max-width: 560px;
+    background: rgba(255,246,234,0.92);
+    padding: 18px 26px;
+    border-radius: 26px;
+    box-shadow: 0 12px 30px rgba(180,90,110,0.25);
+  }
+  .reveal.show{
+    display:block;
+    animation: pop 0.55s ease;
+  }
+  @keyframes pop{
+    0% { transform: scale(0.7); opacity:0; }
+    70% { transform: scale(1.08); opacity:1; }
+    100% { transform: scale(1); }
+  }
+
+  body.celebrating{ justify-content:center; }
+
+  footer{
+    margin-top: auto;
+    font-size: 0.82rem;
+    color: #7a5f5d;
+    max-width: 500px;
+    background: rgba(255,246,234,0.9);
+    padding: 14px 18px;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(180,90,110,0.15);
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 420px){
+    .buttons{ gap: 14px; }
+    #noBtn{ max-width: 78vw; }
+    h1{ padding: 14px 18px; border-radius: 22px; }
+    footer{ font-size: 0.78rem; padding: 12px 14px; }
+  }
+  /* shorter phones (iPhone SE, small Androids) */
+  @media (max-height: 740px){
+    body{ padding-top: calc(2.5vh + env(safe-area-inset-top, 0px)); }
+    h1{ margin-bottom: clamp(16px, 3.5vh, 30px); }
+    footer{ margin-bottom: 8px; }
+  }
+  /* phone turned sideways */
+  @media (max-height: 480px){
+    body{ padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: 12px; }
+    h1{ font-size: 1.15rem; padding: 10px 18px; margin-bottom: 14px; }
+    .buttons{ min-height: 60px; }
+    footer{ margin-top: 18px; }
+  }
+</style>
+</head>
+<body>
+
+  <canvas id="bg"></canvas>
+  <audio id="bgm" src="song.mp3" loop preload="auto" playsinline></audio>
+
+  <h1 id="question">Kriti will you come for a walk with me??</h1>
+
+  <div class="buttons" id="buttonsWrap">
+    <button id="yesBtn" onclick="sayYes()">Yes</button>
+    <button id="noBtn" onclick="sayNo()">No</button>
+  </div>
+
+  <p id="reveal" class="reveal">yayy! knew you'd come around 🌻</p>
+
+  <footer id="siteFooter">made with a little bit of love (and a lot of nerve) by someone who quite literally defeated you in badminton — so please just say yes.</footer>
+
+<script>
+  /* ================== MUSIC ==================
+     song.mp3 must sit in the same folder as index.html.
+     It tries to start straight away; phones only allow sound after a tap,
+     so there it starts on her first tap anywhere on the page. */
+  const bgm = document.getElementById('bgm');
+  bgm.volume = 0.85;
+
+  function playMusic(){
+    if (!bgm.paused) return;
+    const p = bgm.play();
+    if (p && p.catch) p.catch(function(){});
+  }
+  playMusic();
+  ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function(ev){
+    window.addEventListener(ev, playMusic, { passive: true, capture: true });
+  });
+  /* if the phone paused it (switching apps etc.), resume when she comes back */
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) playMusic(); });
+  window.addEventListener('pageshow', playMusic);
+
+  /* ================== YES / NO GAME ================== */
+  const noButtonTexts = [
+    "are you sure?",
+    "aisa chance baar baar nahi milta",
+    "think again",
+    "last chance",
+    "surely not?",
+    "you might regret this later",
+    "give it another thought",
+    "this could be a mistake",
+    "tiramisu khilane le kar jaunga",
+    "don't be so cold",
+    "jevliska?",
+    "is that your final answer?",
+    "i'll buy you momos",
+    "maan jao na, cutie",
+    "pizza treat on me!",
+    "ek aur baar soch lo",
+    "have a heart!",
+    "i'll let you steal my hoodies",
+    "no refund on this offer",
+    "pani puri date?",
+    "take your time, soch lo",
+    "just click yes!",
+    "i promise to share my fries",
+    "nakhre mat dikha itne",
+    "you know you want to say yes",
+    "stop playing hard to get",
+    "error 404: 'No' not found",
+    "ekdum final?",
+    "i'll carry your shopping bags",
+    "chocolate ice cream waiting for you",
+    "yeh galat baat hai",
+    "are you absolutely, positively sure?",
+    "i'll never say no to taking your pictures",
+    "meri momos ki kasam",
+    "you're making a huge mistake!",
+    "i'll let you choose the movie",
+    "biryani khilaunga pakka",
+    "i'll give you head massages",
+    "yaar aise kon karta hai?",
+    "button is broken, you have to click yes",
+    "okay, i'll add extra cheese to everything",
+    "bhagwan se toh daro!",
+    "don't ignore the chemistry!",
+    "main gussa ho jaunga",
+    "okay, what if i bribe you?",
+    "i'll buy you whatever you want from zara",
+    "zara soch samajh ke button dabao",
+    "still no? i admire your persistence",
+    "but we look so good together!",
+    "mera dil rakh lo yaar",
+    "i'm running out of things to say",
+    "main chala jaunga bata raha hu",
+    "fine, double dessert!",
+    "aise tadpana zaroori hai kya?",
+    "i'll text you back in 0.01 seconds",
+    "c'mon, just move the mouse a little to the left",
+    "ziddi mat bano itna",
+    "i'm too cool to beg, but... yes?",
+    "you're testing my patience now",
+    "okay, triple dessert. final offer.",
+    "are you pressing no just to see these messages?",
+    "pakka na? lock kar diya jaye?",
+    "i make a great plus one, just saying",
+    "tumhara hi nuksaan hai isme",
+    "what if i say please with a cherry on top?",
+    "chalo ek aur mauka diya",
+    "i'll learn how to cook your favorite dish",
+    "bhav khana band karo ab",
+    "you're playing a dangerous game",
+    "i'll even pretend to like your weird music",
+    "itna mat socho, haan bol do",
+    "okay, i'll give you the aux cord in the car",
+    "meri cute si smile dekh ke haan bol do",
+    "don't let your ego win",
+    "i'll take you for a late-night drive",
+    "bas bahut hua, ab yes click karo",
+    "you're secretly smiling right now, aren't you?",
+    "i'll buy you that matching aesthetic outfit",
+    "chalo theek hai, i'll pay for the next 3 dates",
+    "this is getting out of hand now",
+    "mujhe pata hai tumhara mann hai",
+    "still no? wow, tough crowd.",
+    "i'll be your personal photographer",
+    "acha baba sorry, ab click yes",
+    "you can't resist my charm forever",
+    "fine, i'll let you have the last slice of pizza",
+    "mouse kharab ho jayega itna click karogi toh",
+    "okay, you win. i'll treat you to fine dining.",
+    "ab toh sharam kar lo thodi!",
+    "i'm clicking yes for you in my mind",
+    "matlab tumhari haan hai",
+    "last warning, otherwise i'm kidnapping you for the date",
+  ];
+
+  let noClickCount = 0;
+  const startYesRem = 1.25;
+  const yesGrowthPerClick = 0.3;   /* was ~0.02 per click; now grows ~13x faster */
+  let yesRem = startYesRem;
+
+  /* biggest the Yes button can get while still fitting on the screen */
+  function maxYesRem(){
+    const byWidth  = (window.innerWidth  * 0.85) / 4.6 / 16;
+    const byHeight = (window.innerHeight * 0.34) / 2.6 / 16;
+    return Math.max(startYesRem, Math.min(byWidth, byHeight, 9));
+  }
+
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+
+  function sayNo(){
+    if (noClickCount >= noButtonTexts.length){
+      sayYes();
+      return;
+    }
+
+    noBtn.textContent = noButtonTexts[noClickCount % noButtonTexts.length];
+    noClickCount++;
+
+    yesRem = Math.min(yesRem + yesGrowthPerClick, maxYesRem());
+    yesBtn.style.fontSize = yesRem + 'rem';
+
+    moveNoButton();
+
+    if (noClickCount >= noButtonTexts.length){
+      sayYes();
+    }
+  }
+
+  function moveNoButton(){
+    if (noBtn.style.position !== 'fixed'){
+      const startRect = noBtn.getBoundingClientRect();
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = startRect.left + 'px';
+      noBtn.style.top = startRect.top + 'px';
+      noBtn.style.margin = '0';
+      noBtn.style.zIndex = '10';
+    }
+
+    const vv = window.visualViewport;
+    const vw = vv ? vv.width : window.innerWidth;
+    const vh = vv ? vv.height : window.innerHeight;
+    const rect = noBtn.getBoundingClientRect();
+    const margin = 12, gap = 14;
+    const maxLeft = Math.max(margin, vw - rect.width - margin);
+    const maxTop = Math.max(margin, vh - rect.height - margin);
+
+    /* where the Yes button will be once it finishes growing */
+    const yr = yesBtn.getBoundingClientRect();
+    const nowPx = parseFloat(getComputedStyle(yesBtn).fontSize) || 16;
+    const f = (yesRem * 16) / nowPx;
+    const cx = yr.left + yr.width / 2, cy = yr.top + yr.height / 2;
+    const yes = {
+      left: cx - yr.width * f / 2 - gap, right: cx + yr.width * f / 2 + gap,
+      top: cy - yr.height * f / 2 - gap, bottom: cy + yr.height * f / 2 + gap
+    };
+
+    let best = null, bestOverlap = Infinity;
+    for (let i = 0; i < 60 && bestOverlap > 0; i++){
+      const l = margin + Math.random() * (maxLeft - margin);
+      const t = margin + Math.random() * (maxTop - margin);
+      const ox = Math.max(0, Math.min(l + rect.width, yes.right) - Math.max(l, yes.left));
+      const oy = Math.max(0, Math.min(t + rect.height, yes.bottom) - Math.max(t, yes.top));
+      if (ox * oy < bestOverlap){ bestOverlap = ox * oy; best = [l, t]; }
+    }
+    noBtn.style.left = best[0] + 'px';
+    noBtn.style.top = best[1] + 'px';
+  }
+
+  function sayYes(){
+    document.getElementById('reveal').classList.add('show');
+    yesBtn.style.display = 'none';
+    noBtn.style.display = 'none';
+    document.getElementById('question').style.display = 'none';
+    document.getElementById('siteFooter').style.display = 'none';
+    document.body.classList.add('celebrating');
+    celebrate();
+  }
+
+  /* ================== FLOWER FIELD BACKGROUND ================== */
+  const cv = document.getElementById('bg');
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, DPR = 1;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.round(W * DPR);
+    cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* ---- pre-drawn flower sprites ---- */
+  function makeSprite(draw){
+    const size = 200;
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d');
+    g.translate(size/2, size/2);
+    draw(g, size/2 - 4);
+    return c;
+  }
+  function radial(g, n, fn, offset){
+    for (let i = 0; i < n; i++){
+      g.save();
+      g.rotate(i * 2 * Math.PI / n + (offset || 0));
+      fn(g, i);
+      g.restore();
+    }
+  }
+  function roundPetals(g, r, n, c1, c2, wid, centerA, centerB, centerR){
+    radial(g, n, function(g){
+      const gr = g.createLinearGradient(0, 0, 0, -r);
+      gr.addColorStop(0, c1);
+      gr.addColorStop(1, c2);
+      g.fillStyle = gr;
+      g.beginPath();
+      g.ellipse(0, -r*0.55, r*wid, r*0.5, 0, 0, Math.PI*2);
+      g.fill();
+    });
+    const cg = g.createRadialGradient(0, 0, 0, 0, 0, r*centerR);
+    cg.addColorStop(0, centerA);
+    cg.addColorStop(1, centerB);
+    g.fillStyle = cg;
+    g.beginPath(); g.arc(0, 0, r*centerR, 0, Math.PI*2); g.fill();
+  }
+
+  const sprites = [
+    /* sunflower */
+    makeSprite(function(g, r){
+      function layer(c1, c2, off){
+        radial(g, 18, function(g){
+          const gr = g.createLinearGradient(0, -r*0.25, 0, -r);
+          gr.addColorStop(0, c1); gr.addColorStop(1, c2);
+          g.fillStyle = gr;
+          g.beginPath();
+          g.moveTo(0, -r*0.3);
+          g.quadraticCurveTo(r*0.24, -r*0.66, 0, -r);
+          g.quadraticCurveTo(-r*0.24, -r*0.66, 0, -r*0.3);
+          g.fill();
+        }, off);
+      }
+      layer('#e39a10', '#ffcf3a', 0);
+      layer('#f5b81c', '#ffe27a', Math.PI/18);
+      const cg = g.createRadialGradient(0, 0, 0, 0, 0, r*0.42);
+      cg.addColorStop(0, '#6b4210'); cg.addColorStop(1, '#3d2408');
+      g.fillStyle = cg;
+      g.beginPath(); g.arc(0, 0, r*0.42, 0, Math.PI*2); g.fill();
+      g.fillStyle = 'rgba(200,150,60,0.55)';
+      for (let i = 1; i < 36; i++){
+        const a = i * 2.39996, d = r*0.38*Math.sqrt(i/36);
+        g.beginPath(); g.arc(Math.cos(a)*d, Math.sin(a)*d, r*0.025, 0, Math.PI*2); g.fill();
+      }
+    }),
+    /* white lily */
+    makeSprite(function(g, r){
+      radial(g, 6, function(g){
+        const gr = g.createLinearGradient(0, 0, 0, -r);
+        gr.addColorStop(0, '#ffd1df'); gr.addColorStop(0.45, '#ffffff'); gr.addColorStop(1, '#fff6fa');
+        g.fillStyle = gr;
+        g.strokeStyle = '#f1bfd0';
+        g.lineWidth = 1.5;
+        g.beginPath();
+        g.moveTo(0, 0);
+        g.bezierCurveTo(r*0.5, -r*0.25, r*0.42, -r*0.8, 0, -r);
+        g.bezierCurveTo(-r*0.42, -r*0.8, -r*0.5, -r*0.25, 0, 0);
+        g.fill(); g.stroke();
+        g.strokeStyle = 'rgba(240,130,170,0.55)';
+        g.beginPath(); g.moveTo(0, -r*0.08); g.lineTo(0, -r*0.62); g.stroke();
+      }, Math.PI/6);
+      g.strokeStyle = '#d9a441'; g.lineWidth = 2;
+      radial(g, 6, function(g){
+        g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -r*0.36); g.stroke();
+        g.fillStyle = '#e57a1f';
+        g.beginPath(); g.ellipse(0, -r*0.4, r*0.04, r*0.08, 0, 0, Math.PI*2); g.fill();
+      });
+    }),
+    /* pink blossom */
+    makeSprite(function(g, r){
+      roundPetals(g, r, 5, '#ff8fb1', '#ffd3e1', 0.36, '#ffe27a', '#f2a81a', 0.2);
+    }),
+    /* daisy */
+    makeSprite(function(g, r){
+      radial(g, 16, function(g){
+        const gr = g.createLinearGradient(0, 0, 0, -r);
+        gr.addColorStop(0, '#f2efe6'); gr.addColorStop(1, '#ffffff');
+        g.fillStyle = gr;
+        g.strokeStyle = 'rgba(210,200,190,0.8)'; g.lineWidth = 1;
+        g.beginPath(); g.ellipse(0, -r*0.62, r*0.12, r*0.38, 0, 0, Math.PI*2);
+        g.fill(); g.stroke();
+      });
+      const cg = g.createRadialGradient(0, 0, 0, 0, 0, r*0.26);
+      cg.addColorStop(0, '#ffd23c'); cg.addColorStop(1, '#e8a410');
+      g.fillStyle = cg; g.beginPath(); g.arc(0, 0, r*0.26, 0, Math.PI*2); g.fill();
+    }),
+    /* lavender blossom */
+    makeSprite(function(g, r){
+      roundPetals(g, r, 5, '#b48cf0', '#e6d6ff', 0.34, '#fff1a8', '#f0b429', 0.18);
+    }),
+    /* coral cosmos */
+    makeSprite(function(g, r){
+      roundPetals(g, r, 8, '#ff6b5e', '#ffb3a6', 0.26, '#ffd54a', '#e89a10', 0.16);
+    })
+  ];
+
+  /* ---- scattered flowers (positions stored as fractions of the screen) ---- */
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const flowers = [];
+  (function seedFlowers(){
+    const area = Math.max(window.screen.width, W) * Math.max(window.screen.height, H);
+    const count = Math.max(34, Math.min(80, Math.round(area / 9500)));
+    const aspect = (Math.max(window.screen.width, W)) / (Math.max(window.screen.height, H));
+    const cols = Math.max(4, Math.round(Math.sqrt(count * aspect)));
+    const rows = Math.ceil(count / cols);
+    for (let r = 0; r < rows; r++){
+      for (let c = 0; c < cols; c++){
+        flowers.push({
+          x: (c + 0.5 + (Math.random() - 0.5) * 0.9) / cols,
+          y: (r + 0.5 + (Math.random() - 0.5) * 0.9) / rows,
+          size: 44 + Math.random() * 56,
+          rot: Math.random() * Math.PI * 2,
+          spin: (Math.random() - 0.5) * 0.0006,
+          spr: sprites[Math.floor(Math.random() * sprites.length)],
+          ph: Math.random() * 6.28,
+          sp: 0.5 + Math.random() * 0.8,
+          ox: 0, oy: 0, sc: 1
+        });
+      }
+    }
+    flowers.sort(function(a, b){ return a.size - b.size; });
+  })();
+
+  /* ---- falling petals and hearts ---- */
+  const petalColors = ['#ffb3c9', '#ff8fb1', '#fff0f5', '#ffe27a', '#ffd1df', '#ffc93c'];
+  const fallers = [];
+  const fallerCount = reduceMotion ? 10 : (W < 600 ? 26 : 46);
+  function newFaller(initial){
+    return {
+      x: Math.random() * W,
+      y: initial ? Math.random() * H : -20,
+      vy: 0.5 + Math.random() * 1.0,
+      vx: (Math.random() - 0.5) * 0.5,
+      rot: Math.random() * 6.28,
+      vr: (Math.random() - 0.5) * 0.04,
+      size: 7 + Math.random() * 9,
+      color: petalColors[Math.floor(Math.random() * petalColors.length)],
+      heart: false,
+      ph: Math.random() * 6.28
+    };
+  }
+  for (let i = 0; i < fallerCount; i++) fallers.push(newFaller(true));
+
+  function drawPetal(s){
+    ctx.beginPath();
+    ctx.ellipse(0, 0, s * 0.55, s, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  function drawHeart(s){
+    ctx.beginPath();
+    ctx.moveTo(0, s * 0.5);
+    ctx.bezierCurveTo(-s * 1.2, -s * 0.2, -s * 0.5, -s * 1.0, 0, -s * 0.35);
+    ctx.bezierCurveTo(s * 0.5, -s * 1.0, s * 1.2, -s * 0.2, 0, s * 0.5);
+    ctx.fill();
+  }
+
+  /* ---- pointer / touch ---- */
+  const ptr = { x: -999, y: -999, active: false, vx: 0, vy: 0 };
+  let ptrTimer = null;
+  window.addEventListener('pointermove', function(e){
+    ptr.vx = e.clientX - ptr.x; ptr.vy = e.clientY - ptr.y;
+    ptr.x = e.clientX; ptr.y = e.clientY; ptr.active = true;
+    clearTimeout(ptrTimer);
+    if (e.pointerType === 'touch') ptrTimer = setTimeout(function(){ ptr.active = false; }, 700);
+  }, { passive: true });
+  window.addEventListener('pointerleave', function(){ ptr.active = false; });
+  window.addEventListener('pointerdown', function(e){
+    ptr.x = e.clientX; ptr.y = e.clientY; ptr.active = true;
+    burst(e.clientX, e.clientY, 14);
+    clearTimeout(ptrTimer);
+    ptrTimer = setTimeout(function(){ ptr.active = false; }, 700);
+  }, { passive: true });
+
+  /* ---- bursts of flowers when tapping ---- */
+  const bits = [];
+  function burst(x, y, n){
+    for (let i = 0; i < n; i++){
+      const a = Math.random() * Math.PI * 2;
+      const sp = 2 + Math.random() * 5;
+      const isFlower = Math.random() < 0.55;
+      bits.push({
+        x: x, y: y,
+        vx: Math.cos(a) * sp,
+        vy: Math.sin(a) * sp - 2,
+        rot: Math.random() * 6.28,
+        vr: (Math.random() - 0.5) * 0.25,
+        life: 0,
+        max: 55 + Math.random() * 35,
+        flower: isFlower,
+        spr: sprites[Math.floor(Math.random() * sprites.length)],
+        size: isFlower ? 20 + Math.random() * 22 : 6 + Math.random() * 7,
+        color: petalColors[Math.floor(Math.random() * petalColors.length)],
+        heart: false
+      });
+    }
+    if (bits.length > 260) bits.splice(0, bits.length - 260);
+  }
+
+  let celebrateTimer = null;
+  function celebrate(){
+    burst(W / 2, H / 2, 30);
+    for (let i = 0; i < 5; i++){
+      setTimeout(function(){ burst(Math.random() * W, Math.random() * H * 0.7, 18); }, i * 220);
+    }
+    clearInterval(celebrateTimer);
+    celebrateTimer = setInterval(function(){
+      burst(Math.random() * W, Math.random() * H * 0.8, 12);
+    }, 700);
+  }
+
+  /* ---- animation loop ---- */
+  let last = performance.now();
+  function frame(now){
+    const dt = Math.min((now - last) / 16.67, 3);
+    last = now;
+    ctx.clearRect(0, 0, W, H);
+
+    /* flowers */
+    const R = 150;
+    for (let i = 0; i < flowers.length; i++){
+      const f = flowers[i];
+      const bx = f.x * W + (reduceMotion ? 0 : Math.sin(now * 0.0005 * f.sp + f.ph) * 7);
+      const by = f.y * H + (reduceMotion ? 0 : Math.cos(now * 0.0004 * f.sp + f.ph) * 7);
+      let tx = 0, ty = 0, ts = 1;
+      if (ptr.active){
+        const dx = bx - ptr.x, dy = by - ptr.y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d < R){
+          const k = 1 - d / R;
+          tx = dx / d * k * 46;
+          ty = dy / d * k * 46;
+          ts = 1 + k * 0.5;
+        }
+      }
+      f.ox += (tx - f.ox) * 0.12 * dt;
+      f.oy += (ty - f.oy) * 0.12 * dt;
+      f.sc += (ts - f.sc) * 0.12 * dt;
+      f.rot += f.spin * 16.67 * dt;
+
+      ctx.save();
+      ctx.translate(bx + f.ox, by + f.oy);
+      ctx.rotate(f.rot + Math.sin(now * 0.0007 * f.sp + f.ph) * 0.12);
+      ctx.scale(f.sc, f.sc);
+      ctx.drawImage(f.spr, -f.size / 2, -f.size / 2, f.size, f.size);
+      ctx.restore();
+    }
+
+    /* falling petals / hearts */
+    for (let i = 0; i < fallers.length; i++){
+      const p = fallers[i];
+      p.x += (p.vx + Math.sin(now * 0.001 + p.ph) * 0.4) * dt;
+      p.y += p.vy * dt;
+      p.rot += p.vr * dt;
+      if (ptr.active){
+        const dx = p.x - ptr.x, dy = p.y - ptr.y;
+        const d = Math.hypot(dx, dy);
+        if (d < 110 && d > 0){
+          p.x += dx / d * 3 * dt;
+          p.y += dy / d * 3 * dt;
+        }
+      }
+      if (p.y > H + 20 || p.x < -30 || p.x > W + 30){
+        const n = newFaller(false);
+        p.x = n.x; p.y = -20; p.vy = n.vy; p.vx = n.vx; p.color = n.color; p.heart = n.heart; p.size = n.size;
+      }
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.heart ? '#ff5c8a' : p.color;
+      ctx.globalAlpha = 0.92;
+      if (p.heart) drawHeart(p.size); else drawPetal(p.size);
+      ctx.restore();
+    }
+
+    /* burst bits */
+    for (let i = bits.length - 1; i >= 0; i--){
+      const b = bits[i];
+      b.life += dt;
+      if (b.life > b.max){ bits.splice(i, 1); continue; }
+      b.vy += 0.12 * dt;
+      b.vx *= 0.99;
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.rot += b.vr * dt;
+      const alpha = 1 - Math.pow(b.life / b.max, 3);
+      ctx.save();
+      ctx.globalAlpha = Math.max(alpha, 0);
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.rot);
+      if (b.flower){
+        ctx.drawImage(b.spr, -b.size / 2, -b.size / 2, b.size, b.size);
+      } else {
+        ctx.fillStyle = b.heart ? '#ff5c8a' : b.color;
+        if (b.heart) drawHeart(b.size); else drawPetal(b.size);
+      }
+      ctx.restore();
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+</script>
+
+</body>
+</html>
